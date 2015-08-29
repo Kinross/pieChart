@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <title>Pie chart</title>
+        <script src="http://raphaeljs.com/raphael.js" type="text/javascript" charset="utf-8">
+        </script>
+        <script src="http://code.jquery.com/jquery-2.0.0.min.js">
+        </script>
+        <style>
+            
+            *, body {
+                margin: 0;
+                padding: 0;
+            };
+            * {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id='graphic'>
+        </div>
+        <script>
+            
+            function toRad(degree){
+            
+                return degree * Math.PI / 180;
+                
+            }
+            
+            
+            function segmentsPath(startAngle, endAngle, xCenter, yCenter, innerR, outerR){
+            
+                var newInnerX1 = xCenter + innerR * Math.cos(toRad(startAngle - 90));
+                
+                var newInnerY1 = yCenter + innerR * Math.sin(toRad(startAngle - 90));
+                
+                var newOuterX1 = xCenter + outerR * Math.cos(toRad(startAngle - 90));
+                
+                var newOuterY1 = yCenter + outerR * Math.sin(toRad(startAngle - 90));
+                
+                var newInnerX2 = xCenter + innerR * Math.cos(toRad(endAngle - 90));
+                
+                var newInnerY2 = yCenter + innerR * Math.sin(toRad(endAngle - 90));
+                
+                var newOuterX2 = xCenter + outerR * Math.cos(toRad(endAngle - 90));
+                
+                var newOuterY2 = yCenter + outerR * Math.sin(toRad(endAngle - 90));
+                
+                var circumference = endAngle - startAngle;
+                
+                var path = [["M", newOuterX1, newOuterY1], ["A", outerR, outerR, 0, +(circumference > 180), 1, newOuterX2, newOuterY2], ["L", newInnerX2, newInnerY2], ["A", innerR, innerR, 0, +(circumference > 180), 0, newInnerX1, newInnerY1], ["z"]];
+                
+                return path;
+                
+            }
+            
+            var canvas = Raphael("graphic", "100%", "100%");
+            
+            var radius = $(window).height() / 2;
+			
+			
+			var data = [34534,5647,4567,878];
+			
+			
+			var total = 0;
+			
+			for(var i =0; i < data.length; i++ ){
+				total += data[i];
+			}
+			
+			var multiplier = 360 / total;
+			
+			
+			var innerRadius = radius / 1.3;
+			
+			
+			var startAngle = 0;
+			var endAngle = multiplier * data[0];
+			
+			for(var i =0; i < data.length; i++ ){
+
+				var path_ = segmentsPath(startAngle, endAngle, radius, radius, innerRadius, radius)
+                
+				canvas.path(path_);
+				
+				startAngle = 0 + endAngle;
+				endAngle += (multiplier * data[i + 1]);				
+
+			}				
+				
+            
+        </script>
+    </body>
+</html>
